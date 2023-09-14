@@ -99,11 +99,13 @@ return {
     require("mason-lspconfig").setup({
       ensure_installed = {
         "lua_ls",
+        "clangd",
         "rust_analyzer",
         "eslint_lsp",
         "js-debug-adapter",
         "prettier",
         "typescript-language-server",
+        "tailwindcss",
       },
     })
 

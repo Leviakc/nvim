@@ -1,4 +1,4 @@
-local dap, dapui, hydra = require "dap", require "dapui", require "hydra"
+local dap, dapui, hydra, window = require "dap", require "dapui", require "hydra", require "nvim-window"
 
 -- Setup Virtual Text
 require("nvim-dap-virtual-text").setup {}
@@ -6,6 +6,10 @@ require("nvim-dap-virtual-text").setup {}
 for _, ft_path in ipairs(vim.api.nvim_get_runtime_file("lua/gomen/config/dap/configs/*.lua", true)) do
   loadfile(ft_path)()
 end
+
+-- map <silent> <leader>w :lua require('nvim-window').pick()<CR>
+-- { "<leader>bD", function() require("mini.bufremove").delete(0, true) end,  desc = "Delete Buffer (Force)" },
+vim.keymap.set("n", "<leader>nv", "<cmd>lua require('nvim-window').pick()<CR>", { desc = "Pick window" })
 
 -- Signs
 vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "", linehl = "", numhl = "" })
@@ -25,13 +29,12 @@ dapui.setup {
         "stacks",
         "watches",
       },
-      size = 80,
-      position = "right",
+      size = 50,
+      position = "left",
     },
     {
       elements = {
         "repl",
-        "console",
       },
       size = 10,
       position = "bottom",
@@ -47,11 +50,12 @@ end
 local hint = [[
  Nvim DAP
  _d_: Start/Continue  _j_: StepOver _k_: StepOut _l_: StepInto ^
- _b_: Toogle Breakpoint  _bc_: Conditional Breakpoint ^
+ _bb_: Toogle Breakpoint  _bc_: Conditional Breakpoint ^
  _?_: log point ^
  _c_: Run To Cursor ^
  _h_: Show information of the variable under the cursor ^
  _x_: Stop Debbuging ^
+ _r_: Run Last ^
  ^^                                                      _<Esc>_
 ]]
 
@@ -67,15 +71,16 @@ hydra {
       position = "bottom",
     },
   },
-  body = "<leader>d",
+  body = "<leader>de",
   heads = {
-    { "d", dap.continue },
-    { "b", dap.toggle_breakpoint },
-    { "l", dap.step_into },
-    { "j", dap.step_over },
-    { "k", dap.step_out },
-    { "h", dapui.eval },
-    { "c", dap.run_to_cursor },
+    { "d",  dap.continue },
+    { "bb", dap.toggle_breakpoint },
+    { "l",  dap.step_into },
+    { "j",  dap.step_over },
+    { "k",  dap.step_out },
+    { "h",  dapui.eval },
+    { "c",  dap.run_to_cursor },
+    { "r",  dap.run_last },
     {
       "bc",
       function()
@@ -104,3 +109,9 @@ hydra {
     { "<Esc>", nil, { exit = true } },
   },
 }
+
+window.setup({
+  config = function()
+
+  end
+})
